@@ -13,10 +13,8 @@ import requests
 
 
 def main():
-    # data = []
     RSdata = []
-    # etaQuery = []
-    # etaData = {}
+
     try:
         # arcpy.management.CreateFeatureclass("GDB/KMB.gdb/", "ETA","POINT")
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "route", "TEXT", field_length=10,
@@ -43,11 +41,13 @@ def main():
         print(inst)
 
     try:
+        # Get RouteStop data in order to know what route exists and fetch ETA data from
         with arcpy.da.SearchCursor("GDB/KMB.gdb/RouteStop",
                                    ('route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY')) as sCursor:
             for row in sCursor:
                 RSdata.append(list(row))
 
+        # Get first bus route ETA data
         kmbETA_url = "https://data.etabus.gov.hk/v1/transport/kmb/route-eta/"
         currQ = (RSdata[0][0], RSdata[0][2])
         query_url = kmbETA_url + r"{}/{}".format(currQ[0], currQ[1])
@@ -56,14 +56,14 @@ def main():
         resp_data = json.loads(etaResp.text)['data']
         routeETA_data = parseRouteETA(resp_data)
 
-        # for row in RSdata:
-        #     iCursor.insertRow(row)
         field = (
             'route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY', 'dest_tc', 'dest_sc', 'dest_en', 'eta_seq',
             'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')
 
         iCursor = arcpy.da.InsertCursor("GDB/KMB.gdb/ETA", field)
         for RS in RSdata:
+            # Check current RouteStop route, service_type match last fetched data.
+            # If not, fetch new ETA data and update currQ
             if (RS[0], RS[2]) != currQ:
                 currQ = (RS[0], RS[2])
                 query_url = kmbETA_url + r"{}/{}".format(currQ[0], currQ[1])
@@ -72,11 +72,14 @@ def main():
                 resp_data = json.loads(etaResp.text)['data']
                 routeETA_data = parseRouteETA(resp_data)
 
+            # Check whether the specific stop have ETA data or not
+            # If not, make the rest of the column None/null
             if (RS[1], RS[3]) not in routeETA_data:
                 row = list(RS) + [None] * 9
                 iCursor.insertRow(row)
             else:
-                for data in routeETA_data[(RS[1],RS[3])]:
+                # Add the remaining ETA data to the column
+                for data in routeETA_data[(RS[1], RS[3])]:
                     row = list(RS) + list(data.values())[5:]
                     iCursor.insertRow(row)
         del iCursor
@@ -95,6 +98,8 @@ def main():
     print("Program Finished. Please check the log file for more information.")
 
 
+# Make the a tuple consisting of bus route direction (I/O) and the bus stop number sequencce in that route as the key
+# to make searching for data much faster and easier to do so.
 def parseRouteETA(resp):
     result = {}
     for etaData in resp:
