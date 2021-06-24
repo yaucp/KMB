@@ -86,6 +86,7 @@ def main():
 
                 resp_data = json.loads(etaResp.text)['data']
                 routeETA_data = parseRouteETA(resp_data)
+            # maximum number of possbile eta 
             # total_etaseq = 6
             # check whether the current bus route and service_type have ETA data
             if (RS[1], RS[3]) not in routeETA_data:
@@ -99,6 +100,7 @@ def main():
                 for data in routeETA_data[(RS[1],RS[3])]:
                     row = list(RS) + list(data.values())[5:]
                     iCursor.insertRow(row)
+                # insert row when number of inserted row is less that total_etaseq
                 # if total_etaseq != 1:
                 #     for i in range(total_etaseq):
                 #         row = list(RS) + [None] * 9
