@@ -70,7 +70,7 @@ def main():
                 iCursor.insertRow(row)
 
     except Exception as inst:
-        logging.info('Insert Route records failure')
+        logging.info('Create Route Table failure')
         logging.info(inst)
         print(inst)
         logging.info('Continue to the next dataset module.')

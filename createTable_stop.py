@@ -61,7 +61,7 @@ def main():
                 iCursor.insertRow(row)
 
     except Exception as inst:
-        logging.info('Insert Stop records failure')
+        logging.info('Create stop table records failure')
         logging.info(inst)
         print(inst)
         logging.info('Continue to the next dataset module.')

@@ -90,7 +90,7 @@ def main():
                 iCursor.insertRow(row)
 
     except Exception as inst:
-        logging.info('Insert EN 24pc records failure')
+        logging.info('Create RouteStop feature class failure')
         logging.info(inst)
         print(inst)
         logging.info('Continue to the next dataset module.')

@@ -97,7 +97,7 @@ def main():
         print("Error encounted.")
         print(inst)
         print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno))
-        logging.info('Smart Car Parking Data URL insert ERROR')
+        logging.info('Create ETA feature class failure')
         logging.info(inst)
         logging.info('Continue to the next dataset module.')
         return False
