@@ -12,7 +12,7 @@ import json, requests
 def insertRouteStop():
     withError = False
     stopData = {}
-    RSdata = []
+    RSdata = {}
     newData = []
 
     # Fetech data by URL and insert them
@@ -57,9 +57,28 @@ def insertRouteStop():
                 logging.info('Continue to process next record.')
                 withError = True
                 continue
-            RSdata.append(row)
-        print(RSdata)
-        print(sys.getsizeof(RSdata))
+            RSdata[(routeStop["route"], routeStop["bound"], routeStop["service_type"], routeStop["seq"],
+                    routeStop["stop"])] = row
+            newData.append((routeStop["route"], routeStop["bound"], routeStop["service_type"], routeStop["seq"],
+                            routeStop["stop"]))
+
+        with arcpy.da.UpdateCursor("GDB/KMB.gdb/RouteStop", (
+                "route", "bound", "service_type", "seq", "stop", "name_en", "name_tc", "name_sc",
+                "SHAPE@XY")) as uCursor:
+            for row in uCursor:
+                idx = (row[0], row[1], row[2], str(row[3]), row[4])
+                if idx not in newData:
+                    uCursor.deleteRow()
+                # Update old dataset
+                elif idx in RSdata:
+                    uCursor.updateRow(RSdata[idx])
+                    del RSdata[idx]
+        if RSdata:
+            with arcpy.da.InsertCursor("GDB/KMB.gdb/RouteStop", (
+                    "route", "bound", "service_type", "seq", "stop", "name_en", "name_tc", "name_sc",
+                    "SHAPE@XY")) as iCursor:
+                for data_row in RSdata.values():
+                    iCursor.insertRow(data_row)
 
 
 
@@ -67,10 +86,13 @@ def insertRouteStop():
         print("Error encounted.")
         print(inst)
         print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno))
-        logging.info('Smart Car Parking Data URL insert ERROR')
+        logging.info('Insert/update RouteStop data failure')
         logging.info(inst)
         logging.info('Continue to the next dataset module.')
         return False
+
+    logging.info('Main Finished')
+    print("Program Finished. Please check the log file for more information.")
 
 
 if __name__ == '__main__':
