@@ -27,6 +27,9 @@ def main():
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "seq", "SHORT", field_is_required="REQUIRED")
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "stop", "TEXT", field_length=25,
         #                           field_is_required="REQUIRED")
+        # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "name_en", "TEXT", field_length=50)
+        # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "name_tc", "TEXT", field_length=25)
+        # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "name_sc", "TEXT", field_length=25)
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "dest_en", "TEXT", field_length=50)
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "dest_tc", "TEXT", field_length=25)
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "dest_sc", "TEXT", field_length=25)
@@ -45,7 +48,8 @@ def main():
         # Extract data from table "GDB/KMB.gdb/RouteStop" as search cursor type
         # with specific field and append to list named RSdata
         with arcpy.da.SearchCursor("GDB/KMB.gdb/RouteStop",
-                                   ('route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY')) as sCursor:
+                                   ('route', 'bound', 'service_type', 'seq', 'stop',
+                                    'SHAPE@XY','name_en', 'name_tc', 'name_sc')) as sCursor:
             for row in sCursor:
                 RSdata.append(list(row))
 
@@ -64,7 +68,9 @@ def main():
         routeETA_data = parseRouteETA(resp_data)
 
         field = (
-            'route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY', 'dest_tc', 'dest_sc', 'dest_en', 'eta_seq',
+            'route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY',
+            'name_en', 'name_tc', 'name_sc',
+            'dest_tc', 'dest_sc', 'dest_en', 'eta_seq',
             'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')
 
         iCursor = arcpy.da.InsertCursor("GDB/KMB.gdb/ETA", field)
