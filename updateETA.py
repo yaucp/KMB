@@ -25,8 +25,8 @@ def updateETA():
         logging.info('Start Data Update...')
         with arcpy.da.UpdateCursor("GDB/KMB.gdb/ETA",
                                    ('route', 'bound', 'seq', 'eta_seq',
-                                    'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')) as sCursor:
-            for row in sCursor:
+                                    'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')) as uCursor:
+            for row in uCursor:
                 if (row[0], row[1]) != currQ:
                     # Change currQ to match with RS and load new data
                     currQ = (row[0], row[1])
@@ -40,12 +40,11 @@ def updateETA():
                 if ((idx < len_of_data ) and (row[2] == list(resp_data[idx].values())[4])):
                     row[3:] = list(resp_data[idx].values())[8:]
 
-                    sCursor.updateRow(row)
+                    uCursor.updateRow(row)
                     idx += 1
                 else:
                     row[3:] = [None] * 6
-                    sCursor.updateRow(row)
-        del sCursor
+                    uCursor.updateRow(row)
 
 
     except Exception as inst:
