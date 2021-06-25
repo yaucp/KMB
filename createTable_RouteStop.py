@@ -14,6 +14,7 @@ import requests
 def main():
     stopData = {}
     RSdata = []
+    Routedata = []
     try:
         logging.info('Start Data preparation...')
         kmbStop_url = "https://data.etabus.gov.hk/v1/transport/kmb/stop/"
@@ -39,7 +40,14 @@ def main():
             row.append(point)
 
             stopData[stop['stop']] = row
-
+        with arcpy.da.SearchCursor("GDB/KMB.gdb/Route",
+                               ('route', 'bound', 'service_type',
+                                'orig_en', 'orig_tc', 'orig_sc', 'dest_en',
+                                'dest_tc', 'dest_sc')) as sCursor:
+            for row in sCursor:
+                Routedata.append(list(row))    
+        
+        i = 0
         for routeStop in kmbRouteStop_data:
             row = []
             row.append(routeStop['route'])
@@ -55,6 +63,11 @@ def main():
                 logging.info('Continue to process next record.')
                 withError = True
                 continue
+                
+             if row[0] != Routedata[i][0] or row[1] != Routedata[i][1] or row[2] != Routedata[i][2]:
+                i += 1
+             row += Routedata[i][3:]
+            
             RSdata.append(row)
 
     except Exception as inst:
@@ -78,6 +91,12 @@ def main():
         arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "name_en", "TEXT", field_length=50)
         arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "name_tc", "TEXT", field_length=25)
         arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "name_sc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "orig_en", "TEXT", field_length=50)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "orig_tc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "orig_sc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "dest_en", "TEXT", field_length=50)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "dest_tc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "dest_sc", "TEXT", field_length=25)
 
     except Exception as inst:
         print(inst)
@@ -85,7 +104,7 @@ def main():
     try:
         with arcpy.da.InsertCursor("GDB/KMB.gdb/RouteStop", (
                 "route", "bound", "service_type", "seq", "stop", "name_en", "name_tc", "name_sc",
-                "SHAPE@XY")) as iCursor:
+                "SHAPE@XY", 'orig_en', 'orig_tc', 'orig_sc', 'dest_en', 'dest_tc', 'dest_sc')) as iCursor:
             for row in RSdata:
                 iCursor.insertRow(row)
 
