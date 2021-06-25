@@ -14,7 +14,7 @@ import requests
 def main():
     stopData = {}
     RSdata = []
-    Routedata = []
+    Routedata = {}
     try:
         logging.info('Start Data preparation...')
         kmbStop_url = "https://data.etabus.gov.hk/v1/transport/kmb/stop/"
@@ -45,7 +45,7 @@ def main():
                                 'orig_en', 'orig_tc', 'orig_sc', 'dest_en',
                                 'dest_tc', 'dest_sc')) as sCursor:
             for row in sCursor:
-                Routedata.append(list(row))    
+                Routedata[(row[0], row[1], row[2])] = list(row)
         
         i = 0
         for routeStop in kmbRouteStop_data:
@@ -63,10 +63,15 @@ def main():
                 logging.info('Continue to process next record.')
                 withError = True
                 continue
-                
-             if row[0] != Routedata[i][0] or row[1] != Routedata[i][1] or row[2] != Routedata[i][2]:
-                i += 1
-             row += Routedata[i][3:]
+
+            if (row[0], row[1], row[2]) in Routedata:
+                row += list(Routedata[(row[0], row[1], row[2])])[3:]
+            else:
+                logging.info('Route Record does not exist for ' + routeStop['stop'])
+                logging.info('Added None for missing data')
+                print('sad!')
+                row += [None] * 6
+                withError = True
             
             RSdata.append(row)
 
