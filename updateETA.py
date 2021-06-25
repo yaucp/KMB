@@ -27,8 +27,8 @@ def updateETA():
                                    ('route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY',
                                     'name_en', 'name_tc', 'name_sc',
                                     'dest_tc', 'dest_sc', 'dest_en', 'eta_seq',
-                                    'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')) as sCursor:
-            for row in sCursor:
+                                    'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')) as uCursor:
+            for row in uCursor:
                 if (row[0], row[2]) != currQ:
                     # Change currQ to match with RS and load new data
                     currQ = (row[0], row[2])
@@ -39,9 +39,9 @@ def updateETA():
                     idx = 0
                     len_of_data = len(resp_data)
 
-                if (idx < len_of_data ) and row[3] == list(resp_data[idx].values())[4]:
+                if (idx < len_of_data) and row[3] == list(resp_data[idx].values())[4]:
                     row[9:] = list(resp_data[idx].values())[5:]
-                    sCursor.updateRow(row)
+                    uCursor.updateRow(row)
                     idx += 1
 
 
