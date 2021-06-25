@@ -49,6 +49,9 @@ def updateETA():
                     row[9:] = list(resp_data[idx].values())[5:]
                     sCursor.updateRow(row)
                     idx += 1
+                else:
+                    row[9:] = [None] * 9
+                    sCursor.updateRow(row)
 
     # print exception
     except Exception as inst:
