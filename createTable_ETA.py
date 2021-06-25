@@ -53,23 +53,14 @@ def main():
         with arcpy.da.SearchCursor("GDB/KMB.gdb/RouteStop",
                                    ('route', 'bound', 'service_type', 'seq', 'stop',
                                     'SHAPE@XY','name_en', 'name_tc', 'name_sc', 'orig_en',
-                                    'orig_tc', 'orig_sc', 'dest_en', 'dest_tc', 'dest_sc')) as sCursor:
+                                    'orig_tc', 'orig_sc')) as sCursor:
             for row in sCursor:
                 RSdata.append(list(row))
 
-        # Base url link for first extraction
+        # Base url link for data extraction
         kmbETA_url = "https://data.etabus.gov.hk/v1/transport/kmb/route-eta/"
         # Used as current indicator and stored route NO. and service type
-        currQ = (RSdata[0][0], RSdata[0][2])
-        query_url = kmbETA_url + r"{}/{}".format(currQ[0], currQ[1])
-
-        # Get data from online url link
-        etaResp = requests.get(url=query_url)
-        # Decode JSON data
-        resp_data = json.loads(etaResp.text)['data']
-        # Change to dictionary type with the tuple of direction
-        # and stop sequence number of a bus route as key
-        routeETA_data = parseRouteETA(resp_data)
+        currQ = None
 
         field = (
             'route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY',
@@ -95,14 +86,14 @@ def main():
             # check whether the current bus route and service_type have ETA data
             if (RS[1], RS[3]) not in routeETA_data:
                 # Write None data with current row of RSdata appended
-                row = list(RS) + [None] * 6
+                row = list(RS) + [None] * 9
                 iCursor.insertRow(row)
                 # for i in range(total_etaseq):
                 #     iCursor.insertRow(row)
             else:
                 # Insert row with ETA data
                 for data in routeETA_data[(RS[1],RS[3])]:
-                    row = list(RS) + list(data.values())[8:]
+                    row = list(RS) + list(data.values())[5:]
                     iCursor.insertRow(row)
                 # insert row when number of inserted row is less that total_etaseq
                 # if total_etaseq != 1:
