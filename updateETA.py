@@ -26,7 +26,7 @@ def updateETA():
 
         logging.info('Start Data Update...')
         with arcpy.da.UpdateCursor("GDB/KMB.gdb/ETA",
-                                   ('route', 'bound', 'seq', 'eta_seq',
+                                   ('route', 'service_type', 'seq', 'eta_seq',
                                     'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')) as uCursor:
             for row in uCursor:
                 if (row[0], row[1]) != currQ:
