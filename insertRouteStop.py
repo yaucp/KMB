@@ -14,6 +14,7 @@ def insertRouteStop():
     stopData = {}
     RSdata = {}
     newData = []
+    Routedata = []
 
     # Fetech data by URL and insert them
     try:
@@ -41,7 +42,16 @@ def insertRouteStop():
             row.append(point)
 
             stopData[stop['stop']] = row
-
+        
+        with arcpy.da.SearchCursor("GDB/KMB.gdb/Route",
+                                   ('route', 'bound', 'service_type',
+                                    'orig_en', 'orig_tc', 'orig_sc', 'dest_en',
+                                    'dest_tc', 'dest_sc')) as sCursor:
+            for row in sCursor:
+                Routedata.append(list(row))
+                
+        
+        i = 0 
         for routeStop in kmbRouteStop_data:
             row = []
             row.append(routeStop['route'])
@@ -57,6 +67,10 @@ def insertRouteStop():
                 logging.info('Continue to process next record.')
                 withError = True
                 continue
+            if row[0] != Routedata[i][0] or row[1] != Routedata[i][1] or row[2] != Routedata[i][2]:
+                i += 1
+            row += Routedata[i][3:]    
+            
             RSdata[(routeStop["route"], routeStop["bound"], routeStop["service_type"], routeStop["seq"],
                     routeStop["stop"])] = row
             newData.append((routeStop["route"], routeStop["bound"], routeStop["service_type"], routeStop["seq"],
@@ -64,7 +78,7 @@ def insertRouteStop():
 
         with arcpy.da.UpdateCursor("GDB/KMB.gdb/RouteStop", (
                 "route", "bound", "service_type", "seq", "stop", "name_en", "name_tc", "name_sc",
-                "SHAPE@XY")) as uCursor:
+                "SHAPE@XY", 'orig_en', 'orig_tc', 'orig_sc', 'dest_en', 'dest_tc', 'dest_sc')) as uCursor:
             for row in uCursor:
                 idx = (row[0], row[1], row[2], str(row[3]), row[4])
                 if idx not in newData:
@@ -76,7 +90,7 @@ def insertRouteStop():
         if RSdata:
             with arcpy.da.InsertCursor("GDB/KMB.gdb/RouteStop", (
                     "route", "bound", "service_type", "seq", "stop", "name_en", "name_tc", "name_sc",
-                    "SHAPE@XY")) as iCursor:
+                    "SHAPE@XY", 'orig_en', 'orig_tc', 'orig_sc', 'dest_en', 'dest_tc', 'dest_sc')) as iCursor:
                 for data_row in RSdata.values():
                     iCursor.insertRow(data_row)
 
