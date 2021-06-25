@@ -19,7 +19,9 @@ def updateETA():
         kmbETA_url = "https://data.etabus.gov.hk/v1/transport/kmb/route-eta/"
         # Used as current indicator and stored route NO. and service type
         currQ = None
+        # used as pointer of current founded online data
         idx = 0
+        #store the length of current founded online data
         len_of_data = 0
 
         logging.info('Start Data Update...')
@@ -34,15 +36,19 @@ def updateETA():
                     etaResp = requests.get(url=query_url)
                     resp_data = json.loads(etaResp.text)['data']
                     routeETA_data = parseRouteETA(resp_data)
+                    # reset pointer and length of current founded online data
                     idx = 0
                     len_of_data = len(resp_data)
-                # updating data
+                # updating data when index is less that total length of current founded online data 
+                # and the route shop sequence is the same as that of the row pointed by idx 
                 if ((idx < len_of_data ) and (row[2] == list(resp_data[idx].values())[4])):
+                    # update current row
                     row[3:] = list(resp_data[idx].values())[8:]
-
                     uCursor.updateRow(row)
+                    # point to next row of online data
                     idx += 1
                 else:
+                    # reset row to None
                     row[3:] = [None] * 6
                     uCursor.updateRow(row)
 
