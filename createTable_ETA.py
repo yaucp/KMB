@@ -65,7 +65,7 @@ def main():
         field = (
             'route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY',
             'name_en', 'name_tc', 'name_sc', 'orig_en', 'orig_tc', 'orig_sc',
-            'dest_en', 'dest_tc', 'dest_sc', 'eta_seq',
+             'dest_tc', 'dest_sc', 'dest_en','eta_seq',
             'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')
 
         iCursor = arcpy.da.InsertCursor("GDB/KMB.gdb/ETA", field)
