@@ -30,6 +30,9 @@ def main():
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "name_en", "TEXT", field_length=50)
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "name_tc", "TEXT", field_length=25)
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "name_sc", "TEXT", field_length=25)
+        # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "orig_en", "TEXT", field_length=50)
+        # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "orig_tc", "TEXT", field_length=25)
+        # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "orig_sc", "TEXT", field_length=25)
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "dest_en", "TEXT", field_length=50)
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "dest_tc", "TEXT", field_length=25)
         # arcpy.management.AddField("GDB/KMB.gdb/ETA/", "dest_sc", "TEXT", field_length=25)
@@ -49,7 +52,8 @@ def main():
         # with specific field and append to list named RSdata
         with arcpy.da.SearchCursor("GDB/KMB.gdb/RouteStop",
                                    ('route', 'bound', 'service_type', 'seq', 'stop',
-                                    'SHAPE@XY','name_en', 'name_tc', 'name_sc')) as sCursor:
+                                    'SHAPE@XY','name_en', 'name_tc', 'name_sc', 'orig_en',
+                                    'orig_tc', 'orig_sc', 'dest_en', 'dest_tc', 'dest_sc')) as sCursor:
             for row in sCursor:
                 RSdata.append(list(row))
 
@@ -69,8 +73,8 @@ def main():
 
         field = (
             'route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY',
-            'name_en', 'name_tc', 'name_sc',
-            'dest_tc', 'dest_sc', 'dest_en', 'eta_seq',
+            'name_en', 'name_tc', 'name_sc', 'orig_en', 'orig_tc', 'orig_sc',
+            'dest_en', 'dest_tc', 'dest_sc', 'eta_seq',
             'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')
 
         iCursor = arcpy.da.InsertCursor("GDB/KMB.gdb/ETA", field)
@@ -86,17 +90,25 @@ def main():
 
                 resp_data = json.loads(etaResp.text)['data']
                 routeETA_data = parseRouteETA(resp_data)
-
+            # maximum number of possbile eta 
+            # total_etaseq = 6
             # check whether the current bus route and service_type have ETA data
             if (RS[1], RS[3]) not in routeETA_data:
                 # Write None data with current row of RSdata appended
-                row = list(RS) + [None] * 9
+                row = list(RS) + [None] * 6
                 iCursor.insertRow(row)
+                # for i in range(total_etaseq):
+                #     iCursor.insertRow(row)
             else:
                 # Insert row with ETA data
                 for data in routeETA_data[(RS[1],RS[3])]:
-                    row = list(RS) + list(data.values())[5:]
+                    row = list(RS) + list(data.values())[8:]
                     iCursor.insertRow(row)
+                # insert row when number of inserted row is less that total_etaseq
+                # if total_etaseq != 1:
+                #     for i in range(total_etaseq):
+                #         row = list(RS) + [None] * 6
+                #         iCursor.insertRow(row)
         del iCursor
 
     except Exception as inst:
