@@ -52,7 +52,7 @@ def updateETA():
             for RS in RSdata:
                 if (RS[0], RS[2]) not in etaData or (RS[1], RS[3]) not in etaData[(RS[0], RS[2])]:
                     # Write None data with current row of RSdata appended
-                    row = list(RS) + [None] * 9
+                    row = RS + [None] * 9
                     iCursor.insertRow(row)
                     # for i in range(total_etaseq):
                     #     iCursor.insertRow(row)
@@ -60,7 +60,7 @@ def updateETA():
                     # Insert row with ETA data
                     data = etaData[(RS[0], RS[2])]
                     for eta in data[(RS[1], RS[3])]:
-                        row = list(RS) + list(eta.values())[5:]
+                        row = RS + list(eta.values())[5:]
                         iCursor.insertRow(row)
                     # insert row when number of inserted row is less that total_etaseq
                     # if total_etaseq != 1:
