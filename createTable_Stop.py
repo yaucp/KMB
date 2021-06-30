@@ -14,7 +14,7 @@ import requests
 def createTable_Stop():
     data = []
 
-    filename = datetime.now().strftime('log/Create_KMB_stop_%H_%M_%d_%m_%Y.log')
+    filename = datetime.now().strftime('log/Create_KMB_Stop_%H_%M_%d_%m_%Y.log')
     logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
     try:
         logging.info('Start Data preparation...')
