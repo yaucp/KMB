@@ -11,7 +11,7 @@ from datetime import datetime
 
 import grequests
 
-def main():
+def createTable_ETA():
     # Initiation
     RSdata = []
     etaURL = []
@@ -19,6 +19,8 @@ def main():
     
     # Create Arsgis Pro table with name "ETA" inside database "GDB/KMB.gdb/"
     try:
+        filename = datetime.now().strftime('log/Create_KMB_ETA_%H_%M_%d_%m_%Y.log')
+        logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
         logging.info('Start Data preparation...')
         arcpy.management.CreateFeatureclass("GDB/KMB.gdb/", "ETA","POINT")
         arcpy.management.AddField("GDB/KMB.gdb/ETA/", "route", "TEXT", field_length=10,
@@ -121,6 +123,4 @@ def parseRouteETA(resp):
     return result
 
 if __name__ == '__main__':
-    filename = datetime.now().strftime('log/Create_KMB_ETA_%H_%M_%d_%m_%Y.log')
-    logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
-    main()
+    createTable_ETA()

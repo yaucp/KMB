@@ -11,11 +11,13 @@ from datetime import datetime
 import requests
 
 
-def main():
+def createTable_Route():
     data = []
 
     # Fetech data by URL and insert them
     try:
+        filename = datetime.now().strftime('log/Create_KMB_route_%H_%M_%d_%m_%Y.log')
+        logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
         logging.info('Start Data preparation...')
         kmbRoute_url = "https://data.etabus.gov.hk/v1/transport/kmb/route/"
 
@@ -82,6 +84,4 @@ def main():
 
 
 if __name__ == '__main__':
-    filename = datetime.now().strftime('log/Create_KMB_route_%H_%M_%d_%m_%Y.log')
-    logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
-    main()
+    createTable_Route()

@@ -11,9 +11,11 @@ from datetime import datetime
 import requests
 
 
-def main():
+def createTable_Stop():
     data = []
 
+    filename = datetime.now().strftime('log/Create_KMB_stop_%H_%M_%d_%m_%Y.log')
+    logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
     try:
         logging.info('Start Data preparation...')
         kmbStop_url = "https://data.etabus.gov.hk/v1/transport/kmb/stop/"
@@ -72,6 +74,4 @@ def main():
 
 
 if __name__ == '__main__':
-    filename = datetime.now().strftime('log/Create_KMB_stop_%H_%M_%d_%m_%Y.log')
-    logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
-    main()
+    createTable_Stop()
