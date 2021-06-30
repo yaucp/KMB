@@ -3,19 +3,22 @@ import sys
 import urllib.request as urllib2
 import xml.etree.ElementTree
 import csv
+from datetime import datetime
 from io import StringIO
 import arcpy
 import logging
 import json, requests
 
 
-def insertCarParkData():
+def insertRoute():
     withError = False
     data = {}
     newData = []
 
     # Fetech data by URL and insert them
     try:
+        filename = datetime.now().strftime('log/Insert_KMB_Route_%H_%M_%d_%m_%Y.log')
+        logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
         logging.info('Start Data preparation...')
         kmbRoute_url = "https://data.etabus.gov.hk/v1/transport/kmb/route/"
 
@@ -70,4 +73,4 @@ def insertCarParkData():
 
 
 if __name__ == '__main__':
-    insertCarParkData()
+    insertRoute()

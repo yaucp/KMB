@@ -8,6 +8,8 @@ import arcpy
 import logging
 import json, requests
 
+from datetime import datetime
+
 
 def insertRouteStop():
     withError = False
@@ -18,6 +20,8 @@ def insertRouteStop():
 
     # Fetech data by URL and insert them
     try:
+        filename = datetime.now().strftime('log/Insert_KMB_RouteStop_%H_%M_%d_%m_%Y.log')
+        logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
         logging.info('Start Data preparation...')
         kmbStop_url = "https://data.etabus.gov.hk/v1/transport/kmb/stop/"
         kmbRouteStop_url = "https://data.etabus.gov.hk/v1/transport/kmb/route-stop"

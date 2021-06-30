@@ -1,15 +1,20 @@
 # import library
 import json
+from datetime import datetime
+
 import arcpy
 import logging
 import grequests
 
 
-def updateETA():
+def insertETA():
     RSdata = []
     etaURL = []
     etaData = {}
     try:
+        filename = datetime.now().strftime('log/Insert_KMB_ETA_%H_%M_%d_%m_%Y.log')
+        logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
+        logging.info('Start Data preparation...')
         # Get all route-stop data to get info on route, stop for query link
         with arcpy.da.SearchCursor("GDB/KMB.gdb/RouteStop",
                                    ('route', 'bound', 'service_type', 'seq', 'stop',
@@ -82,4 +87,4 @@ def parseRouteETA(resp):
 
 
 if __name__ == '__main__':
-    updateETA()
+    insertETA()

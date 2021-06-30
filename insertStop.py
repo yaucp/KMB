@@ -1,20 +1,22 @@
 # coding=utf-8
-import json
 import sys
-import logging
-import xml
-
+import urllib.request as urllib2
+import xml.etree.ElementTree
+import csv
+from io import StringIO
 import arcpy
+import logging
+import json, requests
 
 from datetime import datetime
 
-import requests
 
-
-def main():
+def insertStop():
     data = []
 
     try:
+        filename = datetime.now().strftime('log/Insert_KMB_Stop_%H_%M_%d_%m_%Y.log')
+        logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
         logging.info('Start Data preparation...')
         kmbStop_url = "https://data.etabus.gov.hk/v1/transport/kmb/stop/"
 
@@ -68,4 +70,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    insertStop()
