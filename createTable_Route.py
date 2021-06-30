@@ -47,18 +47,18 @@ def main():
         return False
 
     try:
-        # arcpy.CreateTable_management("GDB/KMB.gdb/", "Route")
-        # arcpy.management.AddField("GDB/KMB.gdb/Route/", "route", "TEXT", field_length=10, field_is_required="REQUIRED")
-        # arcpy.management.AddField("GDB/KMB.gdb/Route/", "bound", "TEXT", field_length=1,
-        #                           field_is_required="REQUIRED")
-        # arcpy.management.AddField("GDB/KMB.gdb/Route/", "service_type", "TEXT", field_length=10,
-        #                           field_is_required="REQUIRED")
-        # arcpy.management.AddField("GDB/KMB.gdb/Route/", "orig_en", "TEXT", field_length=50)
-        # arcpy.management.AddField("GDB/KMB.gdb/Route/", "orig_tc", "TEXT", field_length=25)
-        # arcpy.management.AddField("GDB/KMB.gdb/Route/", "orig_sc", "TEXT", field_length=25)
-        # arcpy.management.AddField("GDB/KMB.gdb/Route/", "dest_en", "TEXT", field_length=50)
-        # arcpy.management.AddField("GDB/KMB.gdb/Route/", "dest_tc", "TEXT", field_length=25)
-        # arcpy.management.AddField("GDB/KMB.gdb/Route/", "dest_sc", "TEXT", field_length=25)
+        arcpy.CreateTable_management("GDB/KMB.gdb/", "Route")
+        arcpy.management.AddField("GDB/KMB.gdb/Route/", "route", "TEXT", field_length=10, field_is_required="REQUIRED")
+        arcpy.management.AddField("GDB/KMB.gdb/Route/", "bound", "TEXT", field_length=1,
+                                  field_is_required="REQUIRED")
+        arcpy.management.AddField("GDB/KMB.gdb/Route/", "service_type", "TEXT", field_length=10,
+                                  field_is_required="REQUIRED")
+        arcpy.management.AddField("GDB/KMB.gdb/Route/", "orig_en", "TEXT", field_length=50)
+        arcpy.management.AddField("GDB/KMB.gdb/Route/", "orig_tc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/Route/", "orig_sc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/Route/", "dest_en", "TEXT", field_length=50)
+        arcpy.management.AddField("GDB/KMB.gdb/Route/", "dest_tc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/Route/", "dest_sc", "TEXT", field_length=25)
         arcpy.management.TruncateTable("GDB/KMB.gdb/Route/")
 
     except Exception as inst:

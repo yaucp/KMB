@@ -46,11 +46,11 @@ def main():
         return False
 
     try:
-        # arcpy.management.CreateFeatureclass("GDB/KMB.gdb/", "Stop","POINT")
-        # arcpy.management.AddField("GDB/KMB.gdb/Stop/", "stop", "TEXT", field_length=25, field_is_required="REQUIRED")
-        # arcpy.management.AddField("GDB/KMB.gdb/Stop/", "name_en", "TEXT", field_length=50)
-        # arcpy.management.AddField("GDB/KMB.gdb/Stop/", "name_tc", "TEXT", field_length=25)
-        # arcpy.management.AddField("GDB/KMB.gdb/Stop/", "name_sc", "TEXT", field_length=25)
+        arcpy.management.CreateFeatureclass("GDB/KMB.gdb/", "Stop","POINT")
+        arcpy.management.AddField("GDB/KMB.gdb/Stop/", "stop", "TEXT", field_length=25, field_is_required="REQUIRED")
+        arcpy.management.AddField("GDB/KMB.gdb/Stop/", "name_en", "TEXT", field_length=50)
+        arcpy.management.AddField("GDB/KMB.gdb/Stop/", "name_tc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/Stop/", "name_sc", "TEXT", field_length=25)
         arcpy.management.TruncateTable("GDB/KMB.gdb/Stop/")
     except Exception as inst:
         print(inst)

@@ -85,23 +85,23 @@ def main():
         return False
 
     try:
-        # arcpy.management.CreateFeatureclass("GDB/KMB.gdb/", "RouteStop","POINT")
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "route", "TEXT", field_length=10, field_is_required="REQUIRED")
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "bound", "TEXT", field_length=1,
-        #                           field_is_required="REQUIRED")
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "service_type", "TEXT", field_length=10,
-        #                           field_is_required="REQUIRED")
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "seq", "SHORT", field_is_required="REQUIRED")
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "stop", "TEXT", field_length=25, field_is_required="REQUIRED")
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "name_en", "TEXT", field_length=50)
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "name_tc", "TEXT", field_length=25)
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "name_sc", "TEXT", field_length=25)
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "orig_en", "TEXT", field_length=50)
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "orig_tc", "TEXT", field_length=25)
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "orig_sc", "TEXT", field_length=25)
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "dest_en", "TEXT", field_length=50)
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "dest_tc", "TEXT", field_length=25)
-        # arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "dest_sc", "TEXT", field_length=25)
+        arcpy.management.CreateFeatureclass("GDB/KMB.gdb/", "RouteStop","POINT")
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "route", "TEXT", field_length=10, field_is_required="REQUIRED")
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "bound", "TEXT", field_length=1,
+                                  field_is_required="REQUIRED")
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "service_type", "TEXT", field_length=10,
+                                  field_is_required="REQUIRED")
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "seq", "SHORT", field_is_required="REQUIRED")
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "stop", "TEXT", field_length=25, field_is_required="REQUIRED")
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "name_en", "TEXT", field_length=50)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "name_tc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "name_sc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "orig_en", "TEXT", field_length=50)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "orig_tc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "orig_sc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "dest_en", "TEXT", field_length=50)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "dest_tc", "TEXT", field_length=25)
+        arcpy.management.AddField("GDB/KMB.gdb/RouteStop/", "dest_sc", "TEXT", field_length=25)
         arcpy.management.TruncateTable("GDB/KMB.gdb/RouteStop/")
 
     except Exception as inst:

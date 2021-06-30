@@ -18,10 +18,10 @@ def updateETA():
             for row in sCursor:
                 RSdata.append(list(row))
 
-        # Base url link for data extraction
+        # Base url link for route eta data extraction
         kmbETA_url = "https://data.etabus.gov.hk/v1/transport/kmb/route-eta/"
 
-        # Get all responses from all the url of every possible route
+        # Get all responses from all the url of every possible route, service_type
         for RS in RSdata:
             tempURL = kmbETA_url + r"{}/{}".format(RS[0], RS[2])
             if tempURL not in etaURL:
@@ -34,11 +34,11 @@ def updateETA():
         for r in responses:
             resp_data = json.loads(r.text)['data']
             # If eta data exists, can extract keys from json data
-            # Or else, parse the url in the response object as the key
             if resp_data:
                 idx = (resp_data[0]['route'], str(resp_data[0]['service_type']))
                 etaData[idx] = parseRouteETA(resp_data)
 
+        # Delete all rows in the table to re-insert the data
         arcpy.management.TruncateTable("GDB/KMB.gdb/ETA/")
         field = (
             'route', 'bound', 'service_type', 'seq', 'stop', 'SHAPE@XY',
@@ -47,30 +47,27 @@ def updateETA():
             'eta', 'rmk_tc', 'rmk_sc', 'rmk_en', 'timestamp')
 
         with arcpy.da.InsertCursor("GDB/KMB.gdb/ETA", field) as iCursor:
-
             # Start extraction and importing data according to each row of RSdata
             for RS in RSdata:
+                # Check whether the Route Stop data have eta data and whether the specific bound and seq have eta
+                # data as well
                 if (RS[0], RS[2]) not in etaData or (RS[1], RS[3]) not in etaData[(RS[0], RS[2])]:
                     # Write None data with current row of RSdata appended
                     row = RS + [None] * 9
                     iCursor.insertRow(row)
-                    # for i in range(total_etaseq):
-                    #     iCursor.insertRow(row)
                 else:
                     # Insert row with ETA data
                     data = etaData[(RS[0], RS[2])]
                     for eta in data[(RS[1], RS[3])]:
                         row = RS + list(eta.values())[5:]
                         iCursor.insertRow(row)
-                    # insert row when number of inserted row is less that total_etaseq
-                    # if total_etaseq != 1:
-                    #     for i in range(total_etaseq):
-                    #         row = list(RS) + [None] * 6
-                    #         iCursor.insertRow(row)
 
     except Exception as inst:
         print(inst)
         print('Error on line {}'.format(sys.exc_info()[-1].tb_lineno))
+        logging.info('Update ETA feature class failure')
+        logging.info(inst)
+        logging.info('Continue to the next dataset module.')
 
     logging.info('Main Finished')
     print("Program Finished. Please check the log file for more information.")
