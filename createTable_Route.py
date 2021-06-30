@@ -82,4 +82,6 @@ def main():
 
 
 if __name__ == '__main__':
+    filename = datetime.now().strftime('log/Create_KMB_route_%H_%M_%d_%m_%Y.log')
+    logging.basicConfig(filename=filename, level=logging.INFO, format='%(asctime)s %(message)s')
     main()
