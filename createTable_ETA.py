@@ -9,11 +9,13 @@ import arcpy
 
 from datetime import datetime
 
-import requests
+import grequests
 
 def main():
     # Initiation
     RSdata = []
+    etaURL = []
+    etaData = {}
     
     # Create Arsgis Pro table with name "ETA" inside database "GDB/KMB.gdb/"
     try:
