@@ -3,11 +3,12 @@ import sys
 import urllib.request as urllib2
 import xml.etree.ElementTree
 import csv
-from datetime import datetime
 from io import StringIO
 import arcpy
 import logging
 import json, requests
+
+from datetime import datetime
 
 
 def insertRoute():

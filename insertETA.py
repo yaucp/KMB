@@ -1,10 +1,11 @@
 # import library
 import json
-from datetime import datetime
 
 import arcpy
 import logging
 import grequests
+
+from datetime import datetime
 
 
 def insertETA():

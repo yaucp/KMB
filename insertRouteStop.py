@@ -16,7 +16,7 @@ def insertRouteStop():
     stopData = {}
     RSdata = {}
     newData = []
-    Routedata = []
+    Routedata = {}
 
     # Fetech data by URL and insert them
     try:
@@ -52,10 +52,9 @@ def insertRouteStop():
                                     'orig_en', 'orig_tc', 'orig_sc', 'dest_en',
                                     'dest_tc', 'dest_sc')) as sCursor:
             for row in sCursor:
-                Routedata.append(list(row))
+                Routedata[(row[0], row[1], row[2])] = list(row)
                 
-        
-        i = 0 
+
         for routeStop in kmbRouteStop_data:
             row = []
             row.append(routeStop['route'])
@@ -71,10 +70,15 @@ def insertRouteStop():
                 logging.info('Continue to process next record.')
                 withError = True
                 continue
-            if row[0] != Routedata[i][0] or row[1] != Routedata[i][1] or row[2] != Routedata[i][2]:
-                i += 1
-            row += Routedata[i][3:]    
-            
+            if (row[0], row[1], row[2]) not in Routedata:
+                logging.info('Route Record does not exist for ' + routeStop['route'] + " " + routeStop['bound']+ " " + routeStop['service_type'])
+                logging.info('Continue to process next record.')
+                print('Route Record does not exist for ' + routeStop['route'] + " " + routeStop['bound']+ " " + routeStop['service_type'])
+                withError = True
+                continue
+            else:
+                row += Routedata[(row[0], row[1], row[2])][3:]
+
             RSdata[(routeStop["route"], routeStop["bound"], routeStop["service_type"], routeStop["seq"],
                     routeStop["stop"])] = row
             newData.append((routeStop["route"], routeStop["bound"], routeStop["service_type"], routeStop["seq"],
